@@ -73,7 +73,7 @@ Run below command to test that you can communicate with the target windows machh
 ansible -m win_ping <server_name>
 ```
 If everything in host_vars and group_vars is correct, you shold see output similar to below.
-```json
+```
 <server_name> | SUCCESS => {
     "changed": false,
     "ping": "pong"
