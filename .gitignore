@@ -282,3 +282,6 @@ $RECYCLE.BIN/
 # Ansible inventory
 /inventory/*
 !/inventory/.gitkeep
+
+# Output directory
+/output/*
