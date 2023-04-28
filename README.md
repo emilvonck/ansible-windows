@@ -1,6 +1,6 @@
 # ansible_windows
 
-Replace with all correct values within <>
+Replace all <> with your specific values.
 
 ## Inventory
 Definition of the Vcenter inventory.
