@@ -270,3 +270,15 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/ansible,macos,python,windows,visualstudiocode,linux
+
+# Ansible group_vars
+/group_vars/*
+!/group_vars/.gitkeep
+
+# Ansible host_vars
+/host_vars/*
+!/host_vars/.gitkeep
+
+# Ansible inventory
+/inventory/*
+!/inventory/.gitkeep
