@@ -1,0 +1,24 @@
+{%- set columns = [] %}
+{%- for host in vars['play_hosts'] %}
+{%- if hostvars[host]['result']['output'] is defined %}
+{%- for routes in hostvars[host]['result']['output'] %}
+{%- for route in routes | from_json %}
+{{ columns.append(route.keys()) }}
+{%- endfor %}
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+HOST,IP,{{ columns[0] | join(",") }}
+{% for host in vars['play_hosts'] %}
+{%- if hostvars[host]['result']['output'] is defined %}
+{% for routes in hostvars[host]['result']['output'] %}
+{% for route in routes | from_json %}
+{%- set values = [] %}
+{%- for key, value in route.items() %}
+{{ values.append(value) }}
+{%- endfor %}
+{{ host }},{{ hostvars[host]['ansible_host'] }},{{ values | join(",") }}
+{% endfor %}
+{%- endfor %}
+{%- endif %}
+{% endfor %}
