@@ -38,7 +38,7 @@ filters:
 EOF
 ```
 
-## group_vars
+### group_vars
 Generic variables for VMs
 ```bash
 cat << 'EOF' > ./group_vars/VMs.yml
@@ -51,7 +51,7 @@ ansible_port: 5985
 EOF
 ```
 
-## group_vars
+### group_vars
 Example of local overrides for specific VMs if needed.
 ```bash
 cat << 'EOF' > ./host_vars/<vm_name>.yml
@@ -59,4 +59,20 @@ cat << 'EOF' > ./host_vars/<vm_name>.yml
 ansible_port: 5986
 ansible_winrm_server_cert_validation: ignore
 EOF
+```
+
+### Test your inventory
+You should see a json representation return of your inventory in vSphere.
+```bash
+ansible-inventory --list
+```
+
+## Test against Windows machine
+If everything in host_vars and group_vars is correct, you shold see output similar to below.
+```bash
+ansible -m win_ping <server_name>
+<server_name> | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
 ```
