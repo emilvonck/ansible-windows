@@ -1,0 +1,29 @@
+- name: PowerShell scripts.
+  hosts: VMs
+  become: false
+  gather_facts: false
+  ignore_unreachable: true
+  vars:
+    new_route: "192.168.2.0/24"
+    old_route: "192.168.1.0/24"
+
+  tasks:
+
+    - name: Get routes from Windows VMs.
+      ansible.windows.win_powershell:
+        script: |
+          Get-NetRoute | Select-Object DestinationPrefix,InterfaceIndex,NextHop | ConvertTo-Json -Compress
+      register: result
+
+    - name: Add new route
+      ansible.builtin.debug:
+        msg: "New-NetRoute -DestinationPrefix {{ new_route }} -InterfaceIndex {{ item['InterfaceIndex'] }} -NextHop {{ item['NextHop'] }}"
+      with_items: "{{ result['output'][0] }}"
+      when: item['DestinationPrefix'] == old_route
+
+
+    - name: Delete old route
+      ansible.builtin.debug:
+        msg: "Remove-NetRoute -DestinationPrefix {{ item['DestinationPrefix'] }}"
+      with_items: "{{ result['output'][0] }}"
+      when: item['DestinationPrefix'] == old_route

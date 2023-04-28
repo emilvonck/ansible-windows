@@ -1,0 +1,26 @@
+- name: PowerShell scripts.
+  hosts: VMs
+  become: false
+  gather_facts: false
+  ignore_unreachable: true
+
+  tasks:
+
+    - name: Get routes from Windows VMs.
+      ansible.windows.win_powershell:
+        script: |
+          Get-NetRoute | Select-Object DestinationPrefix,InterfaceIndex,InterfaceAlias,NextHop | ConvertTo-Json -Compress
+
+      register: result
+
+    - name: Template out hosts with result from Get-NetRoute.
+      ansible.builtin.template:
+        src: ./templates/win_command_results.j2
+        dest: ./output/get_net_route_results.csv
+      delegate_to: localhost
+
+    - name: Template out failed hosts.
+      ansible.builtin.template:
+        src: ./templates/failed_hosts.j2
+        dest: ./output/failed_hosts.csv
+      delegate_to: localhost
