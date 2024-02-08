@@ -1,0 +1,4 @@
+Server,IP,LastPatch,LastBoot,LoggedDate
+{%for host in vars['play_hosts'] %}
+{{ host }},{{ hostvars[host]['ansible_host'] }},{{ hostvars[inventory_hostname]['last_patch'] }},{{ hostvars[inventory_hostname]['last_boot'] }},{{ template_run_date }}
+{% endfor %}

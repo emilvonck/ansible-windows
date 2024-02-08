@@ -1,0 +1,38 @@
+- name: PowerShell scripts.
+  hosts: VMs
+  become: false
+  gather_facts: false
+  ignore_unreachable: true
+
+  tasks:
+    - name: Get last patch date from Windows VMs.
+      ansible.windows.win_powershell:
+        script: |
+          Get-WmiObject Win32_Quickfixengineering | Select-Object @{Name="InstalledOn"; Expression={ Get-Date $_.InstalledOn.DateTime -format yyyy-MM-dd}} -last 1 | Sort-Object -Property InstalledOn | ConvertTo-Json -Compress
+
+      register: result
+
+    - name: Set last_patch fact
+      ansible.builtin.set_fact:
+        last_patch: "{{ item['InstalledOn'] }}"
+      with_items:
+        - "{{ result.output[0] }}"
+
+    - name: Get last boot from Windows VMs.
+      ansible.windows.win_powershell:
+        script: |
+          Get-WmiObject win32_operatingsystem | select @{Name="LastBootUpTime";Expression={Get-Date $_.ConverttoDateTime($_.lastbootuptime)-format "yyyy-MM-dd HH:mm:ss"}} | Select-Object -Property lastbootuptime | ConvertTo-Json -Compress
+
+      register: result
+
+    - name: Set last_boot fact
+      ansible.builtin.set_fact:
+        last_boot: "{{ item['LastBootUpTime'] }}"
+      with_items:
+        - "{{ result.output[0] }}"
+
+    - name: Template out result to CSV.
+      ansible.builtin.template:
+        src: ./templates/win_last_patched.j2
+        dest: ./output/get_last_patched.csv
+      delegate_to: localhost

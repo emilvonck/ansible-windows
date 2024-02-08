@@ -51,7 +51,7 @@ ansible_port: 5985
 EOF
 ```
 
-### group_vars
+### host_vars
 Example of local overrides for specific VMs if needed.
 ```bash
 cat << 'EOF' > ./host_vars/<vm_name>.yml
