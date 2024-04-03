@@ -14,6 +14,16 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
+    "runArgs": [
+        "--userns=keep-id:uid=1000,gid=1000"
+       ],
+    "containerUser": "vscode",
+    "updateRemoteUserUID": true,
+    "containerEnv": {
+      "HOME": "/home/vscode",
+      "TZ": "Europe/Stockholm"
+    },
+
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
 
@@ -22,5 +32,4 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
-	"containerEnv": { "TZ": "Europe/Stockholm" }
 }
